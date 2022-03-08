@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-import uvicorn
 
 from database.connection import engine
 from routes.api import router as api_router
@@ -19,7 +18,3 @@ def prepare_routes():
 def startup_event():
     # Base.metadata.create_all(bind=engine)
     prepare_routes()
-
-
-if __name__ == '__main__':
-    uvicorn.run(app)
