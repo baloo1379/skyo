@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 import uvicorn
 
-from app.database.connection import engine
-from app.routes.api import router as api_router
+from database.connection import engine
+from routes.api import router as api_router
 
 app = FastAPI(
     title='Transposition API',
