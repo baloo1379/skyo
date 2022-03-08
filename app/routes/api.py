@@ -1,8 +1,9 @@
-from fastapi import APIRouter
-from fastapi import FastAPI, File, UploadFile
-from database.connection import engine
-from sqlalchemy import insert, MetaData, Column, Table, String, Integer, Boolean, inspect
-import pandas as pd
+from fastapi import APIRouter, File, UploadFile, Depends
+from sqlalchemy.orm import Session
+
+from app.database.connection import get_db
+from app.repositories.twitchdata_repository import get_objects
+from app.services.batch_insert import insert
 
 
 router = APIRouter(prefix="/api/v1")
@@ -16,9 +17,14 @@ def health():
     return {"health": "ok"}
 
 
-@router.post("/{table_name}/csv")
-async def upload_csv(table_name, data: UploadFile = File(...)):
-    meta = MetaData()
-    meta.create_all(engine)
-    pd.read_csv(data.file, header=1).to_sql(table_name, engine, if_exists='replace')
-    return {"message": "Data inserted"}
+@router.post("/csv")
+def upload_csv(data: UploadFile = File(...)):
+    return insert(data.file)
+
+
+@router.get("/objects")
+def objects(db: Session = Depends(get_db)):
+    """
+    Return all objects from database
+    """
+    return get_objects(db)

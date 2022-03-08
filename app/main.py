@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 
-from database.connection import engine
-from routes.api import router as api_router
+from app.database.connection import engine
+from app.models.twitchdata import Base
+from app.routes.api import router as api_router
 
 app = FastAPI(
     title='Transposition API',
@@ -16,5 +17,5 @@ def prepare_routes():
 
 @app.on_event("startup")
 def startup_event():
-    # Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
     prepare_routes()
