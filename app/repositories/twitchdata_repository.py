@@ -8,6 +8,10 @@ def get_objects(db: Session) -> list[TwitchDataEntity]:
     return db.query(TwitchDataEntity).all()
 
 
+def get_objects_by_language(db: Session, language: str) -> list[TwitchDataEntity]:
+    return db.query(TwitchDataEntity).filter_by(language=language).all()
+
+
 def save_entry(db: Session, entry: TwitchDataCreate) -> TwitchDataEntity:
     db_entry = TwitchDataEntity(
         channel=entry.channel,
