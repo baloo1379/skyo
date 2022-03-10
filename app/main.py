@@ -5,8 +5,8 @@ from app.models.twitchdata import Base
 from app.routes.api import router as api_router
 
 app = FastAPI(
-    title='Transposition API',
-    description='Diagonal transposition cipher in python',
+    title='Top Streamers on Twitch',
+    description='This contains data of Top 1000 Streamers from 2019.',
     version='1.0.0'
 )
 

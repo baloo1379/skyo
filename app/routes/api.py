@@ -3,8 +3,8 @@ from fastapi_pagination import Page, paginate, Params
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
-from app.repositories.twitchdata_repository import get_objects, get_objects_by_language
-from app.schemas.twitchdata import TwitchData
+from app.repositories.twitchdata_repository import get_objects, get_objects_by_filters
+from app.schemas.twitchdata import TwitchData, TwitchDataCreate, TwitchDataOptional
 from app.services.batch_insert import insert
 
 
@@ -33,8 +33,17 @@ def objects(db: Session = Depends(get_db), params: Params = Depends()):
 
 
 @router.get("/object", response_model=Page[TwitchData])
-def filter_objects(db: Session = Depends(get_db), params: Params = Depends(), language: str = "English"):
+def filter_objects(
+        entry: TwitchDataOptional = Depends(),
+        db: Session = Depends(get_db),
+        params: Params = Depends(),
+):
     """
-    Return objects filtered by the language of streamer
+    Return objects filtered by the given parameters
     """
-    return paginate(get_objects_by_language(db, language), params)
+    return paginate(get_objects_by_filters(db, entry), params)
+
+
+@router.put("/object")
+def insert_object(entry: TwitchDataCreate, db: Session = Depends(get_db)):
+    pass

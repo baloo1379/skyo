@@ -20,3 +20,18 @@ class TwitchData(TwitchDataCreate):
 
     class Config:
         orm_mode = True
+
+
+class TwitchDataOptional(BaseModel):
+    id: int | None
+    channel: str | None
+    watch_time: int | None
+    stream_time: int | None
+    peak_viewers: int | None
+    average_viewers: int | None
+    followers: int | None
+    followers_gained: int | None
+    views_gained: int | None
+    partnered: bool | None
+    mature: bool | None
+    language: str | None

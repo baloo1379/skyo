@@ -1,18 +1,22 @@
 from sqlalchemy.orm import Session
 
 from app.models.twitchdata import TwitchData as TwitchDataEntity
-from app.schemas.twitchdata import TwitchDataCreate
+from app.schemas.twitchdata import TwitchDataCreate, TwitchDataOptional
 
 
 def get_objects(db: Session) -> list[TwitchDataEntity]:
     return db.query(TwitchDataEntity).all()
 
 
-def get_objects_by_language(db: Session, language: str) -> list[TwitchDataEntity]:
-    return db.query(TwitchDataEntity).filter_by(language=language).all()
+def get_objects_by_filters(db: Session, entry: TwitchDataOptional) -> list[TwitchDataEntity]:
+    parameters = entry.dict(exclude_none=True)
+    if parameters:
+        return db.query(TwitchDataEntity).filter_by(**parameters).all()
+    else:
+        return get_objects(db)
 
 
-def save_entry(db: Session, entry: TwitchDataCreate) -> TwitchDataEntity:
+def save_object(db: Session, entry: TwitchDataCreate) -> TwitchDataEntity:
     db_entry = TwitchDataEntity(
         channel=entry.channel,
         watch_time=entry.watch_time,
