@@ -3,7 +3,7 @@ from fastapi_pagination import Page, paginate, Params
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
-from app.repositories.twitchdata_repository import get_objects, get_objects_by_filters
+from app.repositories.twitchdata_repository import get_objects, get_objects_by_filters, save_object
 from app.schemas.twitchdata import TwitchData, TwitchDataCreate, TwitchDataOptional
 from app.services.batch_insert import insert
 
@@ -46,4 +46,4 @@ def filter_objects(
 
 @router.put("/object")
 def insert_object(entry: TwitchDataCreate, db: Session = Depends(get_db)):
-    pass
+    return save_object(db, entry)
