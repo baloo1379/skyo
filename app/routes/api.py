@@ -24,7 +24,7 @@ def upload_csv(data: UploadFile = File(...)):
     return insert(data.file)
 
 @router.get("/stats")
-def objects(db: Session = Depends(get_db), params: Params = Depends()):
+def stats(db: Session = Depends(get_db), params: Params = Depends()):
     """
     Return all stats
     """
