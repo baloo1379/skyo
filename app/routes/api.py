@@ -3,7 +3,7 @@ from fastapi_pagination import Page, paginate, Params
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
-from app.repositories.twitchdata_repository import get_objects, get_objects_by_filters, save_object
+from app.repositories.twitchdata_repository import get_objects, get_objects_by_filters, get_stats, save_object
 from app.schemas.twitchdata import TwitchData, TwitchDataCreate, TwitchDataOptional
 from app.services.batch_insert import insert
 
@@ -22,6 +22,13 @@ def health():
 @router.post("/csv")
 def upload_csv(data: UploadFile = File(...)):
     return insert(data.file)
+
+@router.get("/stats")
+def objects(db: Session = Depends(get_db), params: Params = Depends()):
+    """
+    Return all stats
+    """
+    return (get_stats(db))
 
 
 @router.get("/objects", response_model=Page[TwitchData])

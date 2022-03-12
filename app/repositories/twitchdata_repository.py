@@ -1,8 +1,23 @@
+from sqlalchemy import column
 from sqlalchemy.orm import Session
 
 from app.models.twitchdata import TwitchData as TwitchDataEntity
+from app.models.twitchstats import Chart
 from app.schemas.twitchdata import TwitchDataCreate, TwitchDataOptional
 
+def get_stats(db: Session) -> list[Chart]:
+    objects = get_objects(db)
+    return {
+        Chart("watch_time", [row.watch_time for row in objects]),
+        Chart("stream_time", [row.stream_time for row in objects]),
+        Chart("peak_viewers", [row.peak_viewers for row in objects]),
+        Chart("average_viewers", [row.average_viewers for row in objects]),
+        Chart("followers", [row.followers for row in objects]),
+        Chart("followers_gained", [row.followers_gained for row in objects]),
+        Chart("views_gained", [row.views_gained for row in objects]),
+        Chart("partnered", [row.partnered for row in objects]),
+        Chart("mature", [row.mature for row in objects])
+    }
 
 def get_objects(db: Session) -> list[TwitchDataEntity]:
     return db.query(TwitchDataEntity).all()
@@ -14,7 +29,6 @@ def get_objects_by_filters(db: Session, entry: TwitchDataOptional) -> list[Twitc
         return db.query(TwitchDataEntity).filter_by(**parameters).all()
     else:
         return get_objects(db)
-
 
 def save_object(db: Session, entry: TwitchDataCreate) -> TwitchDataEntity:
     db_entry = TwitchDataEntity(
