@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class Bar(BaseModel):
-    label: str
+    name: str
     value: int
 
 
