@@ -1,11 +1,13 @@
-from fastapi import APIRouter, File, UploadFile, Depends
+from fastapi import APIRouter, UploadFile, Depends
 from fastapi_pagination import Page, paginate, Params
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
-from app.repositories.twitchdata_repository import get_objects, get_objects_by_filters, get_stats, save_object
+from app.repositories.twitchdata_repository import get_objects, get_objects_by_filters, save_object, find_and_update_object
 from app.schemas.twitchdata import TwitchData, TwitchDataCreate, TwitchDataOptional
+from app.schemas.twitchstats import Chart
 from app.services.batch_insert import insert
+from app.services.twitchstats import get_stats
 
 
 router = APIRouter(prefix="/api/v1")
@@ -20,15 +22,16 @@ def health():
 
 
 @router.post("/csv")
-def upload_csv(data: UploadFile = File(...)):
+def upload_csv(data: UploadFile):
     return insert(data.file)
 
-@router.get("/stats")
-def stats(db: Session = Depends(get_db), params: Params = Depends()):
+
+@router.get("/stats", response_model=list[Chart])
+def stats(db: Session = Depends(get_db)):
     """
     Return all stats
     """
-    return (get_stats(db))
+    return get_stats(db)
 
 
 @router.get("/objects", response_model=Page[TwitchData])
@@ -51,6 +54,11 @@ def filter_objects(
     return paginate(get_objects_by_filters(db, entry), params)
 
 
-@router.put("/object")
+@router.put("/object", response_model=TwitchData)
 def insert_object(entry: TwitchDataCreate, db: Session = Depends(get_db)):
     return save_object(db, entry)
+
+
+@router.post("/object/{idx}", response_model=TwitchData)
+def edit_object(idx: int, entry: TwitchDataCreate, db: Session = Depends(get_db)):
+    return find_and_update_object(db, idx, entry)
