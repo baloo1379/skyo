@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, BigInteger
 
 from app.database.connection import Base
 
@@ -8,13 +8,13 @@ class TwitchData(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     channel = Column(String)
-    watch_time = Column(Integer)
-    stream_time = Column(Integer)
-    peak_viewers = Column(Integer)
-    average_viewers = Column(Integer)
-    followers = Column(Integer)
-    followers_gained = Column(Integer)
-    views_gained = Column(Integer)
+    watch_time = Column(BigInteger)
+    stream_time = Column(BigInteger)
+    peak_viewers = Column(BigInteger)
+    average_viewers = Column(BigInteger)
+    followers = Column(BigInteger)
+    followers_gained = Column(BigInteger)
+    views_gained = Column(BigInteger)
     partnered = Column(Boolean)
     mature = Column(Boolean)
     language = Column(String)

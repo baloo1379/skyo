@@ -1,0 +1,15 @@
+[Unit]
+Description=skyo service
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=vagrant
+WorkingDirectory=/home/vagrant
+ExecStart=/bin/bash /home/vagrant/start.sh
+
+Environment=PORT=8000 APP_MODULE='app.main:app' PATH=$PATH:/home/vagrant/.local/bin DATABASE_URL=postgresql+psycopg2://admin:Passw0rd@127.0.0.1:5432/testdb
+
+[Install]
+WantedBy=multi-user.target

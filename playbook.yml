@@ -1,0 +1,77 @@
+---
+- name: Configure backend with project
+  hosts: backend
+  vars:
+    extra_path: /home/vagrant/.local/bin
+  tasks:
+    - name: Install pip via pacman
+      become: true
+      community.general.pacman:
+        name:
+        - python-pip
+        - cmake
+        - gcc
+        - nano
+        - postgresql-libs
+        state: present
+        update_cache: yes
+
+    - name: Update pip via pip
+      pip:
+        name: pip
+        extra_args: --upgrade pip
+
+    - name: 'Add {{ extra_path }} if PATH does not exist'
+      lineinfile:
+        path: ~/.bashrc
+        line: 'export PATH=$PATH:"{{ extra_path }}"'
+        insertafter: EOF
+      when: lookup('file', '~/.bashrc') is not search('^\s*PATH\s*=')
+
+    - name: 'Add {{ extra_path }} to PATH'
+      lineinfile:
+        path: ~/.bashrc
+        regexp: 'export PATH=(["])((?!.*?{{ extra_path }}).*?)(["])$'
+        line: 'export PATH=\1\2:{{ extra_path }}\3'
+        backrefs: yes
+      when: lookup('file', '~/.bashrc') is search('^\s*PATH\s*=')
+
+    - name: Copy app module
+      copy:
+        src: ./app/
+        dest: ~/app
+
+    - name: Copy requirements.txt
+      copy:
+        src: ./requirements.txt
+        dest: ~/requirements.txt
+
+    - name: Copy gunicorn configuration
+      copy:
+        src: ./gunicorn_conf.py
+        dest: ~/gunicorn_conf.py
+
+    - name: Copy start.sh
+      copy:
+        src: ./start.sh
+        dest: ~/start.sh
+        mode: '0755'
+
+    - name: Copy service spec
+      become: true
+      copy:
+        src: ./skyo.service
+        dest: /etc/systemd/system/skyo.service
+
+    - name: Install requirements.txt
+      pip:
+        requirements: ~/requirements.txt
+        extra_args: --no-cache-dir
+
+    - name: Start service
+      become: true
+      ansible.builtin.systemd:
+        daemon_reload: yes
+        name: skyo
+        state: started
+        enabled: no
