@@ -9,7 +9,7 @@ User=vagrant
 WorkingDirectory=/home/vagrant
 ExecStart=/bin/bash /home/vagrant/start.sh
 
-Environment=PORT=8000 APP_MODULE='app.main:app' PATH=$PATH:/home/vagrant/.local/bin DATABASE_URL=postgresql+psycopg2://admin:Passw0rd@127.0.0.1:5432/testdb
+Environment=PORT=8000 APP_MODULE='app.main:app' PATH=$PATH:/home/vagrant/.local/bin DATABASE_URL=postgresql+psycopg2://admin:Passw0rd@192.168.56.101:5432/testdb
 
 [Install]
 WantedBy=multi-user.target
