@@ -1,13 +1,17 @@
 # skyo
 
-### Plik .env
+### Dataset
 
-W katalogu głównym projektu utwórz plik `.env`, który zawiera odpowiednio
+https://www.kaggle.com/datasets/aayushmishra1512/twitchdata
 
-| Zmienna | Wartość domyślna | Opis |
+### .env file
+
+In the root directory of the project, create a `.env` file that contains respectively
+
+| Variable | Value | Description |
 |---|---|---|
-| DATABASE_URL | sqlite:///./app/database.sqlite3 | ścieżka do bazy danych |
+| DATABASE_URL | sqlite:///./app/database.sqlite3 | path to database |
 
-### Uruchomienie
+### Startup
 
-Uruchom w konsoli plik `server.py`
+Run `server.py` in the console
